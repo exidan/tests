@@ -8,7 +8,7 @@ from psycopg2 import Error
 from psycopg2.extras import DictCursor
 from jinja2 import Environment, FileSystemLoader
 
- env = Environment(loader=FileSystemLoader('html'))
+env = Environment(loader=FileSystemLoader('html'))
 
 Config = 0
 conn = 0
