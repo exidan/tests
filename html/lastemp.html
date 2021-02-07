@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+    <meta charset="UTF-8">
+    <title>ExSite</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image" href="css/favicon.png">
+</head>
+<body>
+
+<ul>
+{% for result in results %}
+  <li>{{ result }}</li>
+{% endfor %}
+</ul>
+
+</body>
+</html>

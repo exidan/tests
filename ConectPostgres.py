@@ -21,7 +21,7 @@ class ClimatServer(object):
         data_to_show = 'Hello'+ ' world'
         tmpl = env.get_template('index.html')
         return tmpl.render(data=data_to_show)
-        return
+
 
     @cherrypy.expose
     def createtable(self):
@@ -57,7 +57,12 @@ class ClimatServer(object):
     @cherrypy.expose
     def lastemp(self):
       #  index_html = ''' <strong>{{ temp }}</strong>'''
+
+
         lasttemp = givetemp()
+
+        tmpl = env.get_template('lastemp.html')
+        return tmpl.render(results=lasttemp)
         return lasttemp
 
 def givetemp():
@@ -66,13 +71,16 @@ def givetemp():
        cur = conn.cursor(cursor_factory=DictCursor)
 
        #      currenttime = datetime.today()
-       sql = "SELECT * FROM test order by date DESC limit 1"
+       sql = "SELECT * FROM test order by date DESC limit 10"
        cur.execute(sql)
        results = cur.fetchall()
        conn.close()
-       x = results[0]["date"]
-       st = "{:%d %b, %H:%M} -> {} C".format(results[0]["date"],results[0]["temp"])
-       return st
+       st = ""
+       x = []
+       for i in range(len(results)):
+           x.append("{:%d %b, %H:%M} -> {} C.\n".format(results[i]["date"],results[i]["temp"]))
+           st = st+"{:%d %b, %H:%M} -> {} C.\n".format(results[i]["date"],results[i]["temp"])
+       return x
 
 def mail(temp):
     fromaddr = "exidan.alert@gmail.com"
@@ -105,7 +113,7 @@ def heroku():
 def local_conn():
 
     global conn
-    if CompName == 'ServEx':
+    if CompName == 'SERVEX':
         conn = psycopg2.connect(user="postgres",
                                 password="1007",
                                 host="127.0.0.1",
@@ -126,7 +134,7 @@ def local():
     global config
     config = {
         'global': {
-            'server.socket_host': '127.0.0.1',
+            'server.socket_host': '192.168.0.168',
                   },
         '/css': {
             'tools.staticdir.root': os.path.dirname(os.path.abspath(__file__)),
@@ -135,7 +143,7 @@ def local():
         }
     }
 
-if CompName == 'ServEx' or CompName == 'EOPT':
+if CompName == 'SERVEX' or CompName == 'EOPT':
     local()
 else:
     heroku()
